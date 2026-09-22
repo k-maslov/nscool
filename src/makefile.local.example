@@ -1,0 +1,16 @@
+# Machine-specific settings for `make plug`; copy to src/makefile.local
+# (untracked) and adjust. This one is a Mac with Apple silicon: o2scl built
+# from source into /usr/local, HDF5 / GSL / gcc (for gfortran) from Homebrew.
+# On a cluster, point the paths at the module trees instead.
+HB = /opt/homebrew
+O2SCL = /usr/local
+LCXX = clang++
+LFC = gfortran
+LCFLAGS = -std=c++17 -O3 -I$(O2SCL)/include -I$(HB)/include \
+	-I$(HB)/opt/hdf5/include -I$(HB)/opt/gsl/include \
+	-DNO_MPI -DNO_OPENMP -DO2SCL_NO_BOOST_MULTIPRECISION \
+	-Wno-deprecated-declarations
+LFFLAGS = -O3
+LIBS = -L$(O2SCL)/lib -L$(HB)/opt/hdf5/lib -L$(HB)/opt/gsl/lib \
+	-lo2scl -lhdf5 -lhdf5_hl -lgsl -lgslcblas -ledit
+FLIBS = -L$(HB)/opt/gcc/lib/gcc/current -lgfortran -lquadmath

@@ -195,14 +195,9 @@ c     *********************************************************************
          yquarku_t(i)=0.0d0
          yquarkd_t(i)=0.0d0
          yquarks_t(i)=0.0d0
-         ylambda_t(i)=0.0d+00
-         ysminus_t(i)=0.0d+00
-         yszero_t(i)=0.0d+00
-         ysplus_t(i)=0.0d+00
-         mstla_t(i)=0.0d+00
-         mstsm_t(i)=0.0d+00
-         msts0_t(i)=0.0d+00
-         mstsp_t(i)=0.0d+00
+c     The hyperon fractions and effective masses are taken from the
+c     core table as read by nscool_core_comp; they used to be zeroed
+c     here while hyperon support was unfinished.
       end do
       xnut=9.2819d+32
 

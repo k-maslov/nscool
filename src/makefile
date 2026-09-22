@@ -54,6 +54,10 @@ LMPI_CFLAGS = -I/usr/local/hdf5/include \
 COMMENT = "default"
 PYTHON_LDFLAGS = 
 
+# Machine-specific overrides of the settings above (compilers, include and
+# library paths). See makefile.local.example; the file itself is not tracked.
+-include makefile.local
+
 # ----------------------------------------------------------------------
 # UTK generic makefile
 # ----------------------------------------------------------------------
@@ -268,6 +272,16 @@ rs_nompi: $(OBJS_NOMPI) NSCool_nompi.o main_nompi.o nscool_wrap.h
 rs_nompi_omp: $(OBJS_NOMPI) NSCool_nompi.o main_nompi.o nscool_wrap.h
 	$(LCXX) $(LCFLAGS_OMP) -o rs_nompi_omp main_nompi.o NSCool_nompi.o \
 		$(OBJS_NOMPI) $(LIBS) $(FLIBS)
+
+# plug: minimal serial driver for batch cooling runs (plug.cpp). Reads the
+# three tables from a directory and writes one cooling curve; no MPI, no
+# Python, no data-likelihood objects.
+plug.o: plug.cpp nscool_wrap.h
+	$(LCXX) $(LCFLAGS) -o plug.o -c plug.cpp
+
+plug: $(OBJS_PREX_NOMPI) NSCool_nompi.o plug.o nscool_wrap.h
+	$(LCXX) $(LCFLAGS) -o plug plug.o NSCool_nompi.o \
+		$(OBJS_PREX_NOMPI) $(LIBS) $(FLIBS)
 
 rs_emu: $(OBJS_EMU) NSCool.o main.o nscool_wrap.h 
 	$(LMPI_CXX) $(LMPI_CFLAGS) -o rs_emu main.o NSCool.o \

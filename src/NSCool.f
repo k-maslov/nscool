@@ -29,6 +29,8 @@ c *********************************************************************
      1     neebrem_n2,sf_lgtau1,sf_lgtau2,sf_lgr,sf_lgr2)
       
       implicit real*8 (a-h,k-z)
+      real*8 nscool_getenv_d
+      external nscool_getenv_d
       
       parameter (hbar=1.054d-27,e=4.803d-10,kb=1.38d-16)
       parameter (g=6.67d-8,c=2.99792d10)
@@ -340,6 +342,13 @@ c$$$  close(unit=20,status='keep')
       fp1s0=1
       fl1s0=1
       sfquark=0
+c     The gap scaling factors can be overridden from the environment
+c     (NSCOOL_FN1S0, NSCOOL_FN3P2, NSCOOL_FP1S0, NSCOOL_FL1S0); an unset
+c     or empty variable keeps the default of 1.
+      fn1s0=nscool_getenv_d('NSCOOL_FN1S0',fn1s0)
+      fn3p2=nscool_getenv_d('NSCOOL_FN3P2',fn3p2)
+      fp1s0=nscool_getenv_d('NSCOOL_FP1S0',fp1s0)
+      fl1s0=nscool_getenv_d('NSCOOL_FL1S0',fl1s0)
 
 c     READ NEUTRINO PARAMETERS: ********************************************
 c$$$  if (debug.ge.1.) print *,'Opening I_Neutrino*.dat'
@@ -2149,3 +2158,21 @@ c      print *,'Done !'
       end
 
 c *********************************************************************
+
+c *********************************************************************
+c Read a real*8 from the environment variable NAME; return DEF when the
+c variable is unset or empty.
+c *********************************************************************
+      real*8 function nscool_getenv_d(name,def)
+      implicit none
+      character*(*) name
+      real*8 def
+      character*64 val
+      integer vlen,stat
+      call get_environment_variable(name,val,vlen,stat)
+      if (stat.eq.0 .and. vlen.gt.0) then
+         read(val,*) nscool_getenv_d
+      else
+         nscool_getenv_d=def
+      end if
+      end

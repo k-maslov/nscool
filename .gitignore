@@ -2,3 +2,5 @@
 test
 sxrt2
 tl_prof.o2
+src/plug
+src/makefile.local
